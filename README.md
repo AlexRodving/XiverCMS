@@ -241,7 +241,7 @@ cd frontend && npm run build
 
 ## 📚 Документация
 
-Полная документация доступна на [GitHub Pages](https://alexrodving.github.io/xivercms/) или локально:
+Полная документация доступна на [GitHub Pages](https://alexrodving.github.io/XiverCMS/) или локально:
 
 ```bash
 cd docs
