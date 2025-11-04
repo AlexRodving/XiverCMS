@@ -1,11 +1,14 @@
 import axios from 'axios'
 
 // Use VITE_API_URL from environment if set, otherwise use relative path (proxy)
-const baseURL = import.meta.env.VITE_API_URL 
-  ? `${import.meta.env.VITE_API_URL}/api`
+const apiUrl = import.meta.env.VITE_API_URL || ''
+const baseURL = apiUrl 
+  ? `${apiUrl.replace(/\/$/, '')}/api`  // Remove trailing slash if present
   : '/api'
 
-console.log('API Client baseURL:', baseURL)
+console.log('API Client initialized:')
+console.log('  VITE_API_URL:', import.meta.env.VITE_API_URL || '(not set, using proxy)')
+console.log('  baseURL:', baseURL)
 
 const apiClient = axios.create({
   baseURL: baseURL,
