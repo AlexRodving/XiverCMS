@@ -37,6 +37,11 @@ const router = createRouter({
           component: () => import('../views/ContentTypeDetail.vue'),
         },
         {
+          path: 'entries',
+          name: 'ContentEntriesList',
+          component: () => import('../views/ContentEntriesList.vue'),
+        },
+        {
           path: 'content-types/:uid/entries',
           name: 'ContentEntries',
           component: () => import('../views/ContentEntries.vue'),
@@ -50,6 +55,18 @@ const router = createRouter({
           path: 'users',
           name: 'Users',
           component: () => import('../views/Users.vue'),
+          meta: { requiresAdmin: true },
+        },
+        {
+          path: 'roles',
+          name: 'Roles',
+          component: () => import('../views/Roles.vue'),
+          meta: { requiresAdmin: true },
+        },
+        {
+          path: 'permissions',
+          name: 'Permissions',
+          component: () => import('../views/Permissions.vue'),
           meta: { requiresAdmin: true },
         },
       ],

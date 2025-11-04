@@ -20,6 +20,20 @@ func SetupRoutes(r *gin.Engine) {
 	{
 		public.POST("/auth/login", handlers.Login)
 		public.POST("/auth/register", handlers.Register)
+
+		// Public content access - uses OptionalAuthMiddleware to check auth if provided
+		// Access is controlled by accessType in ContentType (public, authenticated, moderator, admin)
+		publicContent := public.Group("")
+		publicContent.Use(middleware.OptionalAuthMiddleware())
+		{
+			publicContent.GET("/content-types", handlers.PublicGetContentTypes)
+			publicContent.GET("/content-types/:uid", handlers.PublicGetContentType)
+			publicContent.GET("/content-types/:uid/entries", handlers.PublicGetContentEntries)
+			publicContent.GET("/content-types/:uid/entries/:id", handlers.PublicGetContentEntry)
+		}
+
+		// Public roles for registration
+		public.GET("/roles/public", handlers.GetPublicRoles)
 	}
 
 	// Protected routes - supports both JWT and API tokens

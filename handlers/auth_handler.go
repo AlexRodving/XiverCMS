@@ -22,6 +22,7 @@ type RegisterRequest struct {
 	Password  string `json:"password" binding:"required,min=6"`
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
+	RoleID    *uint  `json:"roleId"` // Optional: specify role on registration
 }
 
 func Login(c *gin.Context) {
@@ -108,10 +109,33 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	// Assign "Authenticated" role
+	// Assign role if specified, otherwise assign "Authenticated" role
+	if req.RoleID != nil {
+		var role models.Role
+		if err := database.DB.First(&role, *req.RoleID).Error; err == nil {
+			// Only allow public roles or Authenticated role for registration
+			if role.Type == "public" || role.Name == "Authenticated" {
+				database.DB.Model(&user).Association("Roles").Append(&role)
+			}
+		}
+	}
+
+	// Always assign "Authenticated" role if not already assigned
 	var authenticatedRole models.Role
 	if err := database.DB.Where("name = ?", "Authenticated").First(&authenticatedRole).Error; err == nil {
-		database.DB.Model(&user).Association("Roles").Append(&authenticatedRole)
+		// Check if user already has this role
+		var existingRoles []models.Role
+		database.DB.Model(&user).Association("Roles").Find(&existingRoles)
+		hasAuthenticated := false
+		for _, r := range existingRoles {
+			if r.ID == authenticatedRole.ID {
+				hasAuthenticated = true
+				break
+			}
+		}
+		if !hasAuthenticated {
+			database.DB.Model(&user).Association("Roles").Append(&authenticatedRole)
+		}
 	}
 
 	expiration, _ := time.ParseDuration(config.AppConfig.JWTExpiration)

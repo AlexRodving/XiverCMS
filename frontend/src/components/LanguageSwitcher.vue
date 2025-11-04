@@ -13,7 +13,7 @@
     <div
       v-if="isOpen"
       ref="dropdownRef"
-      class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200"
+      class="absolute left-0 bottom-full mb-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200"
     >
       <button
         @click="setLanguage('ru')"

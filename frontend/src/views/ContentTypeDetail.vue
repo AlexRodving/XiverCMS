@@ -64,6 +64,27 @@ const route = useRoute()
 const contentType = ref(null)
 const loading = ref(true)
 
+const getAPIBaseURL = () => {
+  // Get base URL from environment or use current origin
+  return import.meta.env.VITE_API_URL || window.location.origin.replace(':5173', ':8080')
+}
+
+const copyToClipboard = async (text) => {
+  try {
+    await navigator.clipboard.writeText(text)
+    alert('URL copied to clipboard!')
+  } catch (err) {
+    // Fallback for older browsers
+    const textarea = document.createElement('textarea')
+    textarea.value = text
+    document.body.appendChild(textarea)
+    textarea.select()
+    document.execCommand('copy')
+    document.body.removeChild(textarea)
+    alert('URL copied to clipboard!')
+  }
+}
+
 onMounted(async () => {
   try {
     const response = await contentAPI.getContentType(route.params.uid)

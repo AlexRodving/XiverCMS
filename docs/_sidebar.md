@@ -8,10 +8,12 @@
   * [Структура проекта](getting-started/project-structure.md)
 
 * Features
+  * [Интернационализация (i18n)](features/i18n.md)
   * [Связи между Content Types](features/relations.md)
 
 * API Документация
   * [Обзор API](api/overview.md)
+  * [Публичные API](api/public-api.md)
   * [Аутентификация](api/authentication.md)
   * [Пользователи](api/users.md)
   * [Content Types](api/content-types.md)

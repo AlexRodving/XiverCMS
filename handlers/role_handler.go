@@ -40,6 +40,19 @@ func GetRoles(c *gin.Context) {
 	})
 }
 
+// GetPublicRoles - get public roles available for registration
+func GetPublicRoles(c *gin.Context) {
+	var roles []models.Role
+
+	if err := database.DB.Where("type = ?", "public").
+		Find(&roles).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, roles)
+}
+
 func GetRole(c *gin.Context) {
 	id := c.Param("id")
 	var role models.Role

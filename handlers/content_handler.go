@@ -62,7 +62,18 @@ type CreateContentTypeRequest struct {
 	DisplayName string                 `json:"displayName" binding:"required"`
 	Description string                 `json:"description"`
 	IsVisible   bool                   `json:"isVisible"`
+	AccessType  string                 `json:"accessType"`
 	Schema      map[string]interface{} `json:"schema" binding:"required"`
+}
+
+type UpdateContentTypeRequest struct {
+	UID         string                 `json:"uid"` // Optional for updates
+	Kind        string                 `json:"kind"`
+	DisplayName string                 `json:"displayName"`
+	Description string                 `json:"description"`
+	IsVisible   bool                   `json:"isVisible"`
+	AccessType  string                 `json:"accessType"`
+	Schema      map[string]interface{} `json:"schema"`
 }
 
 func CreateContentType(c *gin.Context) {
@@ -85,11 +96,15 @@ func CreateContentType(c *gin.Context) {
 		DisplayName: req.DisplayName,
 		Description: req.Description,
 		IsVisible:   req.IsVisible,
+		AccessType:  req.AccessType,
 		Schema:      models.JSONB(req.Schema),
 	}
 
 	if contentType.Kind == "" {
 		contentType.Kind = "collectionType"
+	}
+	if contentType.AccessType == "" {
+		contentType.AccessType = "public"
 	}
 
 	if err := database.DB.Create(&contentType).Error; err != nil {
@@ -109,7 +124,7 @@ func UpdateContentType(c *gin.Context) {
 		return
 	}
 
-	var req CreateContentTypeRequest
+	var req UpdateContentTypeRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -123,6 +138,9 @@ func UpdateContentType(c *gin.Context) {
 	}
 	if req.Schema != nil {
 		contentType.Schema = models.JSONB(req.Schema)
+	}
+	if req.AccessType != "" {
+		contentType.AccessType = req.AccessType
 	}
 	contentType.IsVisible = req.IsVisible
 

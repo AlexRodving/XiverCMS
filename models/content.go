@@ -44,6 +44,7 @@ type ContentType struct {
 	DisplayName string `json:"displayName" gorm:"not null"`
 	Description string `json:"description"`
 	IsVisible   bool   `json:"isVisible" gorm:"default:true"`
+	AccessType  string `json:"accessType" gorm:"default:public"` // public, authenticated, moderator, admin
 
 	// Schema definition stored as JSON
 	Schema JSONB `json:"schema" gorm:"type:jsonb"`

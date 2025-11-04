@@ -22,10 +22,19 @@
           <router-link
             to="/content-types"
             class="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors"
-            :class="$route.path.startsWith('/content-types') ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-100'"
+            :class="$route.path === '/content-types' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-100'"
           >
             <DocumentIcon class="w-5 h-5 mr-3" />
             {{ $t('navigation.contentTypes') }}
+          </router-link>
+
+          <router-link
+            to="/entries"
+            class="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+            :class="$route.path.startsWith('/entries') || $route.path.includes('/entries') ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-100'"
+          >
+            <DocumentTextIcon class="w-5 h-5 mr-3" />
+            {{ $t('navigation.contentEntries') }}
           </router-link>
 
           <router-link
@@ -36,6 +45,26 @@
           >
             <UsersIcon class="w-5 h-5 mr-3" />
             {{ $t('navigation.users') }}
+          </router-link>
+
+          <router-link
+            v-if="authStore.isSuperAdmin()"
+            to="/roles"
+            class="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+            :class="$route.path.startsWith('/roles') ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-100'"
+          >
+            <ShieldCheckIcon class="w-5 h-5 mr-3" />
+            {{ $t('navigation.roles') }}
+          </router-link>
+
+          <router-link
+            v-if="authStore.isSuperAdmin()"
+            to="/permissions"
+            class="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+            :class="$route.path.startsWith('/permissions') ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-100'"
+          >
+            <KeyIcon class="w-5 h-5 mr-3" />
+            {{ $t('navigation.permissions') }}
           </router-link>
         </nav>
 
@@ -85,8 +114,11 @@ import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 import {
   HomeIcon,
   DocumentIcon,
+  DocumentTextIcon,
   UsersIcon,
   ArrowRightOnRectangleIcon,
+  ShieldCheckIcon,
+  KeyIcon,
 } from '@heroicons/vue/24/outline'
 
 const authStore = useAuthStore()

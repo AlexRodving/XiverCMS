@@ -21,8 +21,8 @@ export const contentAPI = {
   getEntries: (uid, params = {}) => 
     apiClient.get(`/content-types/${uid}/entries`, { params }),
   
-  getEntry: (uid, id) => 
-    apiClient.get(`/content-types/${uid}/entries/${id}`),
+  getEntry: (uid, id, params = {}) => 
+    apiClient.get(`/content-types/${uid}/entries/${id}`, { params }),
   
   createEntry: (uid, data) => 
     apiClient.post(`/content-types/${uid}/entries`, data),
