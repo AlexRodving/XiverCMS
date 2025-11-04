@@ -113,15 +113,11 @@ func SetupRoutes(r *gin.Engine) {
 
 		// Content Types Management (protected - requires auth)
 		// NOTE: Public read access to content types is via /api/content-types (public routes above)
+		// The public handler already checks if user is admin and returns all types if so
 		// These endpoints allow managing content types (create, update, delete)
 		contentTypes := protected.Group("/content-types")
 		{
-			// Admin GET endpoints (for viewing all types including non-visible ones)
-			// Public access is via public routes above
-			contentTypes.GET("/admin", handlers.GetContentTypes)     // Different path to avoid conflict
-			contentTypes.GET("/:uid/admin", handlers.GetContentType) // Admin version
-
-			// Management endpoints
+			// Management endpoints only (GET is handled by public routes with OptionalAuthMiddleware)
 			contentTypes.POST("", handlers.CreateContentType)
 			contentTypes.PUT("/:uid", handlers.UpdateContentType)
 			contentTypes.DELETE("/:uid", handlers.DeleteContentType)
