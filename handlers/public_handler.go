@@ -166,9 +166,10 @@ func PublicGetContentEntries(c *gin.Context) {
 
 	query := database.DB.Model(&models.ContentEntry{}).Where("content_type_id = ? AND status = ?", contentType.ID, "published")
 
-	// Search
+	// Search (simplified for SQLite compatibility)
 	if search := c.Query("search"); search != "" {
-		query = query.Where("data::text ILIKE ?", "%"+search+"%")
+		// Simple LIKE search on JSON text - works with both SQLite and PostgreSQL
+		query = query.Where("data LIKE ?", "%"+search+"%")
 	}
 
 	var total int64
