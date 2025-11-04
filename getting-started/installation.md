@@ -1,6 +1,6 @@
 # Установка
 
-XiverCRM можно установить несколькими способами: из исходного кода, через Docker или скомпилированный бинарник.
+XiverCMS можно установить несколькими способами: из исходного кода, через Docker или скомпилированный бинарник.
 
 ## Предварительные требования
 
@@ -14,8 +14,8 @@ XiverCRM можно установить несколькими способам
 ### 1. Клонирование репозитория
 
 ```bash
-git clone https://github.com/xivercrm/xivercrm.git
-cd xivercrm
+git clone https://github.com/xivercms/xivercms.git
+cd xivercms
 ```
 
 ### 2. Установка зависимостей Backend
@@ -43,7 +43,7 @@ GIN_MODE=debug
 
 # Database Configuration
 DB_DRIVER=sqlite
-DB_PATH=./data/xivercrm.db
+DB_PATH=./data/xivercms.db
 
 # JWT Configuration
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
@@ -102,13 +102,13 @@ docker-compose down
 
 ```bash
 # Сборка бинарника
-go build -o bin/xivercrm main.go
+go build -o bin/xivercms main.go
 
 # Или через Makefile
 make build
 
 # Запуск
-./bin/xivercrm
+./bin/xivercms
 ```
 
 ### Frontend
@@ -140,13 +140,13 @@ curl http://localhost:8080/health
 
 После первого запуска создается администратор:
 
-- **Email**: `admin@xivercrm.com`
+- **Email**: `admin@xivercms.com`
 - **Password**: `admin123`
 
 ⚠️ **ВАЖНО**: Смените пароль администратора в production!
 
 ## Следующие шаги
 
-- [Быстрый старт](quickstart.md) - начните использовать XiverCRM
+- [Быстрый старт](quickstart.md) - начните использовать XiverCMS
 - [Конфигурация](../configuration/overview.md) - настройте систему под ваши нужды
 

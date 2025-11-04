@@ -1,6 +1,6 @@
 # Middleware
 
-Руководство по созданию middleware в XiverCRM.
+Руководство по созданию middleware в XiverCMS.
 
 ## Создание Middleware
 

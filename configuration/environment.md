@@ -1,6 +1,6 @@
 # Переменные окружения
 
-Полный список переменных окружения для настройки XiverCRM.
+Полный список переменных окружения для настройки XiverCMS.
 
 ## Server Configuration
 
@@ -81,19 +81,19 @@ DB_PASSWORD=postgres
 Имя базы данных (для PostgreSQL).
 
 ```env
-DB_NAME=xivercrm
+DB_NAME=xivercms
 ```
 
-**По умолчанию:** `xivercrm`
+**По умолчанию:** `xivercms`
 
 ### DB_PATH
 Путь к файлу базы данных (для SQLite).
 
 ```env
-DB_PATH=./data/xivercrm.db
+DB_PATH=./data/xivercms.db
 ```
 
-**По умолчанию:** `./data/xivercrm.db`
+**По умолчанию:** `./data/xivercms.db`
 
 ## JWT Configuration
 
@@ -152,11 +152,11 @@ DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
 DB_PASSWORD=your_secure_password
-DB_NAME=xivercrm
+DB_NAME=xivercms
 
 # Database Configuration (SQLite - альтернатива)
 # DB_DRIVER=sqlite
-# DB_PATH=./data/xivercrm.db
+# DB_PATH=./data/xivercms.db
 
 # JWT Configuration
 JWT_SECRET=your-super-secret-jwt-key-min-32-characters

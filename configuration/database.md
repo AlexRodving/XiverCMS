@@ -1,6 +1,6 @@
 # Конфигурация базы данных
 
-XiverCRM поддерживает SQLite и PostgreSQL.
+XiverCMS поддерживает SQLite и PostgreSQL.
 
 ## SQLite (по умолчанию)
 
@@ -8,7 +8,7 @@ XiverCRM поддерживает SQLite и PostgreSQL.
 
 ```env
 DB_DRIVER=sqlite
-DB_PATH=./data/xivercrm.db
+DB_PATH=./data/xivercms.db
 ```
 
 ### Преимущества
@@ -28,7 +28,7 @@ DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
 DB_PASSWORD=your_password
-DB_NAME=xivercrm
+DB_NAME=xivercms
 ```
 
 ### Установка PostgreSQL
@@ -52,11 +52,11 @@ docker run --name postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgre
 psql -U postgres
 
 # Создайте базу данных
-CREATE DATABASE xivercrm;
+CREATE DATABASE xivercms;
 
 # Создайте пользователя (опционально)
-CREATE USER xivercrm_user WITH PASSWORD 'your_password';
-GRANT ALL PRIVILEGES ON DATABASE xivercrm TO xivercrm_user;
+CREATE USER xivercms_user WITH PASSWORD 'your_password';
+GRANT ALL PRIVILEGES ON DATABASE xivercms TO xivercms_user;
 ```
 
 ## Миграции
@@ -76,7 +76,7 @@ GRANT ALL PRIVILEGES ON DATABASE xivercrm TO xivercrm_user;
 
 ## Подключение
 
-XiverCRM автоматически подключается к базе данных при запуске. Убедитесь, что:
+XiverCMS автоматически подключается к базе данных при запуске. Убедитесь, что:
 
 1. База данных существует
 2. Пользователь имеет права доступа
@@ -88,20 +88,20 @@ XiverCRM автоматически подключается к базе дан�
 
 ```bash
 # Backup
-pg_dump -U postgres xivercrm > backup.sql
+pg_dump -U postgres xivercms > backup.sql
 
 # Restore
-psql -U postgres xivercrm < backup.sql
+psql -U postgres xivercms < backup.sql
 ```
 
 ### SQLite
 
 ```bash
 # Backup
-cp ./data/xivercrm.db ./data/xivercrm.db.backup
+cp ./data/xivercms.db ./data/xivercms.db.backup
 
 # Restore
-cp ./data/xivercrm.db.backup ./data/xivercrm.db
+cp ./data/xivercms.db.backup ./data/xivercms.db
 ```
 
 ## Производительность
