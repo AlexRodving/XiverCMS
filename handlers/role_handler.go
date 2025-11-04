@@ -102,7 +102,7 @@ func CreateRole(c *gin.Context) {
 	}
 
 	// Assign permissions if provided
-	if req.PermissionIDs != nil && len(req.PermissionIDs) > 0 {
+	if len(req.PermissionIDs) > 0 {
 		var permissions []models.Permission
 		database.DB.Where("id IN ?", req.PermissionIDs).Find(&permissions)
 		database.DB.Model(&role).Association("Permissions").Append(permissions)
