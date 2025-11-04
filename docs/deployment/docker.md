@@ -1,6 +1,6 @@
 # Docker Deployment
 
-Развертывание XiverCRM с помощью Docker.
+Развертывание XiverCMS с помощью Docker.
 
 ## Docker Compose
 
@@ -20,16 +20,16 @@ docker-compose up -d
 ### Backend
 
 ```bash
-docker build -f Dockerfile.backend -t xivercrm-backend .
-docker run -p 8080:8080 xivercrm-backend
+docker build -f Dockerfile.backend -t xivercms-backend .
+docker run -p 8080:8080 xivercms-backend
 ```
 
 ### Frontend
 
 ```bash
 cd frontend
-docker build -t xivercrm-frontend .
-docker run -p 80:80 xivercrm-frontend
+docker build -t xivercms-frontend .
+docker run -p 80:80 xivercms-frontend
 ```
 
 ## Переменные окружения
@@ -37,7 +37,7 @@ docker run -p 80:80 xivercrm-frontend
 Используйте `.env` файл или передавайте через `-e`:
 
 ```bash
-docker run -e PORT=8080 -e DB_DRIVER=postgres xivercrm-backend
+docker run -e PORT=8080 -e DB_DRIVER=postgres xivercms-backend
 ```
 
 ## Volumes
@@ -45,7 +45,7 @@ docker run -e PORT=8080 -e DB_DRIVER=postgres xivercrm-backend
 Для постоянного хранения данных:
 
 ```bash
-docker run -v ./data:/app/data xivercrm-backend
+docker run -v ./data:/app/data xivercms-backend
 ```
 
 ## Production рекомендации

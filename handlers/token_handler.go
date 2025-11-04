@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/xivercrm/xivercrm/database"
-	"github.com/xivercrm/xivercrm/models"
+	"github.com/xivercms/xivercms/database"
+	"github.com/xivercms/xivercms/models"
 )
 
 func GetAPITokens(c *gin.Context) {

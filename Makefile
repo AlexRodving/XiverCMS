@@ -21,7 +21,7 @@ run:
 
 build:
 	@echo "Building backend..."
-	go build -o bin/xivercrm main.go
+	go build -o bin/xivercms main.go
 
 test:
 	@echo "Running tests..."

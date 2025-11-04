@@ -33,7 +33,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs
-          cname: docs.xivercrm.com  # Опционально, для кастомного домена
+          cname: docs.xivercms.com  # Опционально, для кастомного домена
 ```
 
 ### 2. Настройка GitHub Pages
@@ -58,7 +58,7 @@ git subtree push --prefix docs origin gh-pages
 
 1. Добавьте файл `docs/CNAME`:
 ```
-docs.xivercrm.com
+docs.xivercms.com
 ```
 
 2. Настройте DNS записи для вашего домена:

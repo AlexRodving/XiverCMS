@@ -1,6 +1,6 @@
 # Создание Handlers
 
-Руководство по созданию HTTP handlers в XiverCRM.
+Руководство по созданию HTTP handlers в XiverCMS.
 
 ## Структура Handler
 
@@ -12,8 +12,8 @@ import (
     "strconv"
     
     "github.com/gin-gonic/gin"
-    "github.com/xivercrm/xivercrm/database"
-    "github.com/xivercrm/xivercrm/models"
+    "github.com/xivercms/xivercms/database"
+    "github.com/xivercms/xivercms/models"
 )
 
 func GetMyModels(c *gin.Context) {

@@ -19,11 +19,11 @@
 
     <div class="bg-white rounded-lg shadow">
       <div class="p-6 border-b border-gray-200">
-        <h2 class="text-xl font-semibold text-gray-900">Welcome to XiverCRM</h2>
+        <h2 class="text-xl font-semibold text-gray-900">Welcome to XiverCMS</h2>
       </div>
       <div class="p-6">
         <p class="text-gray-600 mb-4">
-          XiverCRM is a headless CMS built with Go, Gin, GORM, and Vue3. 
+          XiverCMS is a headless CMS built with Go, Gin, GORM, and Vue3. 
           It provides a powerful and flexible content management system similar to Strapi.
         </p>
         <div class="space-y-2">

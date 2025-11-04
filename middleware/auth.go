@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/xivercrm/xivercrm/auth"
+	"github.com/xivercms/xivercms/auth"
 )
 
 func AuthMiddleware() gin.HandlerFunc {

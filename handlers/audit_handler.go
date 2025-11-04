@@ -5,8 +5,8 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/xivercrm/xivercrm/database"
-	"github.com/xivercrm/xivercrm/models"
+	"github.com/xivercms/xivercms/database"
+	"github.com/xivercms/xivercms/models"
 )
 
 func GetAuditLogs(c *gin.Context) {

@@ -5,7 +5,7 @@
       <div class="flex flex-col h-full">
         <!-- Logo -->
         <div class="flex items-center justify-center h-16 border-b border-gray-200">
-          <h1 class="text-xl font-bold text-gray-900">XiverCRM</h1>
+          <h1 class="text-xl font-bold text-gray-900">XiverCMS</h1>
         </div>
 
         <!-- Navigation -->

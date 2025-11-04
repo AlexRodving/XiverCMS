@@ -4,11 +4,11 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/xivercrm/xivercrm/auth"
-	"github.com/xivercrm/xivercrm/config"
-	"github.com/xivercrm/xivercrm/database"
-	"github.com/xivercrm/xivercrm/middleware"
-	"github.com/xivercrm/xivercrm/routes"
+	"github.com/xivercms/xivercms/auth"
+	"github.com/xivercms/xivercms/config"
+	"github.com/xivercms/xivercms/database"
+	"github.com/xivercms/xivercms/middleware"
+	"github.com/xivercms/xivercms/routes"
 )
 
 func main() {

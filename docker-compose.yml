@@ -3,11 +3,11 @@ version: '3.8'
 services:
   postgres:
     image: postgres:15-alpine
-    container_name: xivercrm-db
+    container_name: xivercms-db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: xivercrm
+      POSTGRES_DB: xivercms
     ports:
       - "5432:5432"
     volumes:
@@ -22,7 +22,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.backend
-    container_name: xivercrm-backend
+    container_name: xivercms-backend
     ports:
       - "8080:8080"
     environment:
@@ -33,7 +33,7 @@ services:
       DB_PORT: 5432
       DB_USER: postgres
       DB_PASSWORD: postgres
-      DB_NAME: xivercrm
+      DB_NAME: xivercms
       JWT_SECRET: change-this-secret-key-in-production
       JWT_EXPIRATION: 24h
       CORS_ORIGIN: http://localhost:5173
@@ -48,7 +48,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: xivercrm-frontend
+    container_name: xivercms-frontend
     ports:
       - "5173:5173"
     environment:

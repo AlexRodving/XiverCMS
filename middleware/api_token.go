@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/xivercrm/xivercrm/database"
-	"github.com/xivercrm/xivercrm/models"
+	"github.com/xivercms/xivercms/database"
+	"github.com/xivercms/xivercms/models"
 )
 
 // APITokenMiddleware validates API tokens for programmatic access

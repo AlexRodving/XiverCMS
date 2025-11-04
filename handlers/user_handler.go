@@ -5,9 +5,9 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/xivercrm/xivercrm/auth"
-	"github.com/xivercrm/xivercrm/database"
-	"github.com/xivercrm/xivercrm/models"
+	"github.com/xivercms/xivercms/auth"
+	"github.com/xivercms/xivercms/database"
+	"github.com/xivercms/xivercms/models"
 )
 
 func GetUsers(c *gin.Context) {

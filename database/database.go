@@ -4,8 +4,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/xivercrm/xivercrm/config"
-	"github.com/xivercrm/xivercrm/models"
+	"github.com/xivercms/xivercms/config"
+	"github.com/xivercms/xivercms/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -72,7 +72,7 @@ func Migrate() {
 func Seed() {
 	// Check if admin user already exists
 	var adminUser models.User
-	if err := DB.Where("email = ?", "admin@xivercrm.com").First(&adminUser).Error; err == nil {
+	if err := DB.Where("email = ?", "admin@xivercms.com").First(&adminUser).Error; err == nil {
 		log.Println("Admin user already exists, skipping seed")
 		return
 	}
@@ -80,7 +80,7 @@ func Seed() {
 	// Create default admin user
 	hashedPassword, _ := hashPassword("admin123") // In production, use a secure password
 	adminUser = models.User{
-		Email:        "admin@xivercrm.com",
+		Email:        "admin@xivercms.com",
 		Username:     "admin",
 		Password:     hashedPassword,
 		FirstName:    "Admin",

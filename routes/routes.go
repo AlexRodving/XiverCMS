@@ -2,8 +2,8 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/xivercrm/xivercrm/handlers"
-	"github.com/xivercrm/xivercrm/middleware"
+	"github.com/xivercms/xivercms/handlers"
+	"github.com/xivercms/xivercms/middleware"
 )
 
 func SetupRoutes(r *gin.Engine) {

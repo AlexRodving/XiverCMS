@@ -1,6 +1,6 @@
 # Конфигурация
 
-XiverCRM настраивается через переменные окружения и конфигурационные файлы.
+XiverCMS настраивается через переменные окружения и конфигурационные файлы.
 
 ## Переменные окружения
 
@@ -32,7 +32,7 @@ DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
 DB_PASSWORD=postgres
-DB_NAME=xivercrm
+DB_NAME=xivercms
 
 # JWT
 JWT_SECRET=your-secret-key

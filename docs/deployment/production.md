@@ -1,6 +1,6 @@
 # Production Deployment
 
-Рекомендации по развертыванию XiverCRM в production.
+Рекомендации по развертыванию XiverCMS в production.
 
 ## Подготовка
 
@@ -24,7 +24,7 @@ ALLOWED_ORIGINS=https://yourdomain.com
 
 ```bash
 # Backend
-go build -o bin/xivercrm main.go
+go build -o bin/xivercms main.go
 
 # Frontend
 cd frontend && npm run build
@@ -34,20 +34,20 @@ cd frontend && npm run build
 
 ### Systemd Service
 
-Создайте `/etc/systemd/system/xivercrm.service`:
+Создайте `/etc/systemd/system/xivercms.service`:
 
 ```ini
 [Unit]
-Description=XiverCRM Backend
+Description=XiverCMS Backend
 After=network.target
 
 [Service]
 Type=simple
 User=www-data
-WorkingDirectory=/opt/xivercrm
-ExecStart=/opt/xivercrm/bin/xivercrm
+WorkingDirectory=/opt/xivercms
+ExecStart=/opt/xivercms/bin/xivercms
 Restart=always
-EnvironmentFile=/opt/xivercrm/.env
+EnvironmentFile=/opt/xivercms/.env
 
 [Install]
 WantedBy=multi-user.target
@@ -56,8 +56,8 @@ WantedBy=multi-user.target
 Запуск:
 
 ```bash
-sudo systemctl enable xivercrm
-sudo systemctl start xivercrm
+sudo systemctl enable xivercms
+sudo systemctl start xivercms
 ```
 
 ### Nginx Reverse Proxy
@@ -108,7 +108,7 @@ server {
 
 ```bash
 # Ежедневный backup
-pg_dump -U postgres xivercrm > backup_$(date +%Y%m%d).sql
+pg_dump -U postgres xivercms > backup_$(date +%Y%m%d).sql
 ```
 
 ### Медиа файлы

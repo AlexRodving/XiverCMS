@@ -1,4 +1,4 @@
-module github.com/xivercrm/xivercrm
+module github.com/xivercms/xivercms
 
 go 1.21
 

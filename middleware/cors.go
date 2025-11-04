@@ -3,7 +3,7 @@ package middleware
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/xivercrm/xivercrm/config"
+	"github.com/xivercms/xivercms/config"
 )
 
 func CORSMiddleware() gin.HandlerFunc {

@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/xivercrm/xivercrm/database"
-	"github.com/xivercrm/xivercrm/models"
+	"github.com/xivercms/xivercms/database"
+	"github.com/xivercms/xivercms/models"
 )
 
 // RBACMiddleware checks if user has permission to perform action
