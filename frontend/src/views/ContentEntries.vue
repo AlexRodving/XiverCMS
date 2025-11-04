@@ -247,11 +247,25 @@ const pagination = ref({
 
 const loadContentType = async () => {
   try {
+    console.log('Loading content type:', contentTypeUID.value)
     const response = await contentAPI.getContentType(contentTypeUID.value)
     contentType.value = response.data
     contentTypeSchema.value = response.data.schema || {}
+    console.log('Content type loaded:', contentType.value)
+    console.log('Schema:', contentTypeSchema.value)
+    
+    if (!contentTypeSchema.value || Object.keys(contentTypeSchema.value).length === 0) {
+      console.warn('Content type schema is empty!')
+      if (window.showToast) {
+        window.showToast.warning(t('common.warning'), t('contentEntries.emptySchema'))
+      }
+    }
   } catch (error) {
     console.error('Failed to load content type:', error)
+    console.error('Error response:', error.response?.data)
+    if (window.showToast) {
+      window.showToast.error(t('common.error'), t('contentEntries.loadContentTypeFailed'))
+    }
   }
 }
 
@@ -385,6 +399,18 @@ const resetForm = () => {
 
 const createEntry = async () => {
   try {
+    // Check if content type is loaded
+    if (!contentTypeSchema.value || Object.keys(contentTypeSchema.value).length === 0) {
+      const errorMsg = t('contentEntries.contentTypeNotLoaded')
+      console.error('Content type schema is not loaded:', contentTypeUID.value)
+      if (window.showToast) {
+        window.showToast.error(t('common.error'), errorMsg)
+      } else {
+        alert(errorMsg)
+      }
+      return
+    }
+    
     let data
     if (useVisualEditor.value && dynamicFormRef.value) {
       // Validate form
@@ -399,8 +425,21 @@ const createEntry = async () => {
       }
       data = dynamicFormRef.value.getData()
     } else {
-      data = JSON.parse(entryDataJson.value)
+      try {
+        data = JSON.parse(entryDataJson.value)
+      } catch (e) {
+        const errorMsg = t('contentEntries.invalidJson')
+        console.error('Invalid JSON:', e)
+        if (window.showToast) {
+          window.showToast.error(t('common.error'), errorMsg)
+        } else {
+          alert(errorMsg)
+        }
+        return
+      }
     }
+    
+    console.log('Creating entry for content type:', contentTypeUID.value, 'with data:', data)
     
     await contentAPI.createEntry(contentTypeUID.value, {
       data,
@@ -414,11 +453,13 @@ const createEntry = async () => {
       window.showToast.success(t('common.success'), t('contentEntries.createSuccess'))
     }
   } catch (error) {
-    const errorMsg = error.response?.data?.error || t('contentEntries.createFailed')
+    console.error('Error creating entry:', error)
+    console.error('Error response:', error.response?.data)
+    const errorMsg = error.response?.data?.error || error.message || t('contentEntries.createFailed')
     if (window.showToast) {
       window.showToast.error(t('common.error'), errorMsg)
     } else {
-      alert(errorMsg)
+      alert(errorMsg + '\n\nCheck console for details.')
     }
   }
 }

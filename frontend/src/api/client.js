@@ -1,7 +1,14 @@
 import axios from 'axios'
 
+// Use VITE_API_URL from environment if set, otherwise use relative path (proxy)
+const baseURL = import.meta.env.VITE_API_URL 
+  ? `${import.meta.env.VITE_API_URL}/api`
+  : '/api'
+
+console.log('API Client baseURL:', baseURL)
+
 const apiClient = axios.create({
-  baseURL: '/api',
+  baseURL: baseURL,
   headers: {
     'Content-Type': 'application/json',
   },

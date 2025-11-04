@@ -208,7 +208,11 @@ export default {
     confirmDelete: 'Are you sure you want to delete this entry?',
     noData: 'No data',
     entriesCount: 'Entries count',
-    viewEntries: 'View Entries'
+    viewEntries: 'View entries',
+    emptySchema: 'Content type schema is empty. Add fields to the content type.',
+    contentTypeNotLoaded: 'Failed to load content type. Please refresh the page.',
+    loadContentTypeFailed: 'Failed to load content type',
+    invalidJson: 'Invalid JSON format. Please check your data.'
   },
   users: {
     title: 'Users',

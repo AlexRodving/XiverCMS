@@ -208,7 +208,11 @@ export default {
     confirmDelete: 'Вы уверены, что хотите удалить эту запись?',
     noData: 'Нет данных',
     entriesCount: 'Количество записей',
-    viewEntries: 'Просмотреть записи'
+    viewEntries: 'Просмотр записей',
+    emptySchema: 'Схема типа контента пуста. Добавьте поля в тип контента.',
+    contentTypeNotLoaded: 'Не удалось загрузить тип контента. Обновите страницу.',
+    loadContentTypeFailed: 'Не удалось загрузить тип контента',
+    invalidJson: 'Неверный формат JSON. Проверьте данные.'
   },
   users: {
     title: 'Пользователи',
