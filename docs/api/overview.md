@@ -93,12 +93,12 @@ GET /api/media-files?search=photo
 
 ## Публичные API
 
-XiverCMS предоставляет публичные эндпоинты для получения контента без аутентификации (если Content Type настроен как публичный):
+XiverCMS предоставляет публичные эндпоинты для получения **данных контента** без аутентификации (если Content Type настроен как публичный):
 
-- `GET /api/content-types` - список публичных Content Types
-- `GET /api/content-types/:uid` - получить публичный Content Type
-- `GET /api/content-types/:uid/entries` - получить публичные записи
-- `GET /api/content-types/:uid/entries/:id` - получить публичную запись
+- `GET /api/:uid` - получить публичные записи Content Type (упрощенный URL)
+- `GET /api/:uid/:id` - получить публичную запись по ID
+
+⚠️ **Важно:** Endpoints для получения схем Content Types (`/api/content-types`) **не являются публичными** и требуют аутентификации. Они используются только в админ-панели.
 
 Доступ контролируется через `accessType` в Content Type (public, authenticated, moderator, admin).
 

@@ -11,17 +11,17 @@ import (
 )
 
 // safeUserResponse returns a safe representation of user data for public APIs
+// For security, only returns minimal non-sensitive information
+// Email, firstName, lastName are intentionally excluded as they are personal data
 func safeUserResponse(user *models.User) map[string]interface{} {
 	if user == nil {
 		return nil
 	}
 	return map[string]interface{}{
-		"id":        user.ID,
-		"email":     user.Email,
-		"username":  user.Username,
-		"firstName": user.FirstName,
-		"lastName":  user.LastName,
-		// Intentionally exclude: isSuperAdmin, isActive, password hash, roles
+		"id":       user.ID,
+		"username": user.Username,
+		// Intentionally exclude: email, firstName, lastName, isSuperAdmin, isActive, password hash, roles
+		// These are sensitive personal data that should not be exposed in public APIs
 	}
 }
 
@@ -35,11 +35,11 @@ func PublicGetContentTypes(c *gin.Context) {
 	offset := (page - 1) * pageSize
 
 	// Check if user is authenticated and is admin
-	userID, exists := c.Get("userID")
+	userId, exists := c.Get("userId")
 	isAdmin := false
-	if exists && userID != nil {
+	if exists && userId != nil {
 		var user models.User
-		if err := database.DB.Preload("Roles").First(&user, userID).Error; err == nil {
+		if err := database.DB.Preload("Roles").First(&user, userId).Error; err == nil {
 			// Check if user is super admin or has admin role
 			if user.IsSuperAdmin {
 				isAdmin = true
@@ -70,10 +70,26 @@ func PublicGetContentTypes(c *gin.Context) {
 	}
 
 	// Filter by access - only include types user can access (if not admin)
-	accessibleTypes := []models.ContentType{}
+	// Also hide schema from non-admin users for security
+	accessibleTypes := []map[string]interface{}{}
 	for _, ct := range allContentTypes {
 		if isAdmin || middleware.CheckContentTypeAccess(ct.UID, c) {
-			accessibleTypes = append(accessibleTypes, ct)
+			typeMap := map[string]interface{}{
+				"id":          ct.ID,
+				"createdAt":   ct.CreatedAt,
+				"updatedAt":   ct.UpdatedAt,
+				"uid":         ct.UID,
+				"kind":        ct.Kind,
+				"displayName": ct.DisplayName,
+				"description": ct.Description,
+				"isVisible":   ct.IsVisible,
+				"accessType":  ct.AccessType,
+			}
+			// Only admins get the schema
+			if isAdmin {
+				typeMap["schema"] = ct.Schema
+			}
+			accessibleTypes = append(accessibleTypes, typeMap)
 		}
 	}
 
@@ -111,11 +127,11 @@ func PublicGetContentType(c *gin.Context) {
 	var contentType models.ContentType
 
 	// Check if user is authenticated and is admin
-	userID, exists := c.Get("userID")
+	userId, exists := c.Get("userId")
 	isAdmin := false
-	if exists && userID != nil {
+	if exists && userId != nil {
 		var user models.User
-		if err := database.DB.Preload("Roles").First(&user, userID).Error; err == nil {
+		if err := database.DB.Preload("Roles").First(&user, userId).Error; err == nil {
 			if user.IsSuperAdmin {
 				isAdmin = true
 			} else {
@@ -146,11 +162,30 @@ func PublicGetContentType(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, contentType)
+	// For non-admin users, hide schema for security
+	// Schema contains internal structure that shouldn't be exposed publicly
+	response := map[string]interface{}{
+		"id":          contentType.ID,
+		"createdAt":   contentType.CreatedAt,
+		"updatedAt":   contentType.UpdatedAt,
+		"uid":         contentType.UID,
+		"kind":        contentType.Kind,
+		"displayName": contentType.DisplayName,
+		"description": contentType.Description,
+		"isVisible":   contentType.IsVisible,
+		"accessType":  contentType.AccessType,
+	}
+
+	// Only admins get the schema
+	if isAdmin {
+		response["schema"] = contentType.Schema
+	}
+
+	c.JSON(http.StatusOK, response)
 }
 
 // PublicGetContentEntries - get public content entries
-// Handles /api/{uid} - simplified URL like Strapi
+// Handles /api/{uid} - simplified URL
 func PublicGetContentEntries(c *gin.Context) {
 	contentTypeUID := c.Param("uid")
 
@@ -234,7 +269,7 @@ func PublicGetContentEntries(c *gin.Context) {
 }
 
 // PublicGetContentEntry - get public content entry
-// Handles /api/{uid}/{id} - simplified URL like Strapi
+// Handles /api/{uid}/{id} - simplified URL
 func PublicGetContentEntry(c *gin.Context) {
 	contentTypeUID := c.Param("uid")
 	entryID := c.Param("id")

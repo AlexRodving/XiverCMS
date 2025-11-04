@@ -27,18 +27,12 @@ func SetupRoutes(r *gin.Engine) {
 
 		// Public content access - uses OptionalAuthMiddleware to check auth if provided
 		// Access is controlled by accessType in ContentType (public, authenticated, moderator, admin)
-		// Simplified URLs like Strapi: /api/{content-type} and /api/{content-type}/{id}
+		// Simplified URLs: /api/{content-type} and /api/{content-type}/{id}
+		// NOTE: Content Types endpoints are NOT public - they require authentication (moved to protected routes)
+		// Only content entries are available via public API
 		publicContent := public.Group("")
 		publicContent.Use(middleware.OptionalAuthMiddleware())
 		{
-			// Get all content types (list of available types)
-			// Must be registered before /:uid to avoid conflicts
-			publicContent.GET("/content-types", handlers.PublicGetContentTypes)
-
-			// Get specific content type schema
-			// Must be registered before /:uid to avoid conflicts
-			publicContent.GET("/content-types/:uid", handlers.PublicGetContentType)
-
 			// Public API: Get single entry by ID (must be before /:uid)
 			// URL: /api/{uid}/{id} (e.g., /api/articles/1, /api/books/123)
 			publicContent.GET("/:uid/:id", handlers.PublicGetContentEntry)
@@ -112,12 +106,14 @@ func SetupRoutes(r *gin.Engine) {
 		}
 
 		// Content Types Management (protected - requires auth)
-		// NOTE: Public read access to content types is via /api/content-types (public routes above)
-		// The public handler already checks if user is admin and returns all types if so
-		// These endpoints allow managing content types (create, update, delete)
+		// Admin panel endpoints - all require authentication
+		// These endpoints are used by the admin panel to manage content types
 		contentTypes := protected.Group("/content-types")
 		{
-			// Management endpoints only (GET is handled by public routes with OptionalAuthMiddleware)
+			// Admin panel endpoints (GET requires auth, returns full schema)
+			contentTypes.GET("", handlers.GetContentTypes)
+			contentTypes.GET("/:uid", handlers.GetContentType)
+			// Management endpoints
 			contentTypes.POST("", handlers.CreateContentType)
 			contentTypes.PUT("/:uid", handlers.UpdateContentType)
 			contentTypes.DELETE("/:uid", handlers.DeleteContentType)

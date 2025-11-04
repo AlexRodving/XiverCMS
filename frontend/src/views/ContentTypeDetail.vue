@@ -13,52 +13,13 @@
 
     <div v-else-if="contentType" class="space-y-6">
       <div class="bg-white rounded-lg shadow p-6">
-        <h2 class="text-xl font-semibold mb-4">Details</h2>
-        <dl class="grid grid-cols-2 gap-4">
-          <div>
-            <dt class="text-sm font-medium text-gray-500">UID</dt>
-            <dd class="mt-1 text-sm text-gray-900">{{ contentType.uid }}</dd>
-          </div>
-          <div>
-            <dt class="text-sm font-medium text-gray-500">Kind</dt>
-            <dd class="mt-1 text-sm text-gray-900">{{ contentType.kind }}</dd>
-          </div>
-          <div>
-            <dt class="text-sm font-medium text-gray-500">Display Name</dt>
-            <dd class="mt-1 text-sm text-gray-900">{{ contentType.displayName }}</dd>
-          </div>
-          <div>
-            <dt class="text-sm font-medium text-gray-500">Visible</dt>
-            <dd class="mt-1 text-sm text-gray-900">{{ contentType.isVisible ? 'Yes' : 'No' }}</dd>
-          </div>
-          <div class="col-span-2">
-            <dt class="text-sm font-medium text-gray-500">Description</dt>
-            <dd class="mt-1 text-sm text-gray-900">{{ contentType.description || 'No description' }}</dd>
-          </div>
-        </dl>
-      </div>
-
-      <div class="bg-white rounded-lg shadow p-6">
         <h2 class="text-xl font-semibold mb-4">Schema</h2>
-        <pre class="bg-gray-50 p-4 rounded-md overflow-auto text-sm">{{ JSON.stringify(contentType.schema, null, 2) }}</pre>
+        <pre class="bg-gray-50 p-4 rounded-md overflow-auto text-sm font-mono">{{ JSON.stringify(contentType.schema, null, 2) }}</pre>
       </div>
 
       <div class="bg-white rounded-lg shadow p-6">
         <h2 class="text-xl font-semibold mb-4">Public API Endpoints</h2>
         <div class="space-y-3">
-          <div>
-            <dt class="text-sm font-medium text-gray-500 mb-1">Get Content Type</dt>
-            <dd class="flex items-center gap-2">
-              <code class="flex-1 bg-gray-50 px-3 py-2 rounded-md text-sm font-mono">{{ getAPIBaseURL() }}/api/content-types/{{ contentType.uid }}</code>
-              <button
-                @click="copyToClipboard(`${getAPIBaseURL()}/api/content-types/${contentType.uid}`)"
-                class="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
-                title="Copy URL"
-              >
-                📋
-              </button>
-            </dd>
-          </div>
           <div>
             <dt class="text-sm font-medium text-gray-500 mb-1">Get Entries List</dt>
             <dd class="flex items-center gap-2">
@@ -93,15 +54,6 @@
             <p v-else-if="contentType.accessType === 'admin'" class="text-xs">This endpoint requires <strong>Admin</strong> role.</p>
           </div>
         </div>
-      </div>
-
-      <div class="flex justify-end space-x-4">
-        <router-link
-          :to="`/content-types/${contentType.uid}/entries`"
-          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-        >
-          View Entries
-        </router-link>
       </div>
     </div>
   </div>

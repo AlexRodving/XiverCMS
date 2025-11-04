@@ -100,5 +100,5 @@ go mod verify
 
 - **XiverCRM** - неправильное название (CRM = Customer Relationship Management)
 - **XiverCMS** - правильное название (CMS = Content Management System)
-- Проект функционально является CMS (как Strapi), а не CRM
+- Проект функционально является CMS, а не CRM
 

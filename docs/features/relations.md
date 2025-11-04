@@ -1,6 +1,6 @@
 # Связи между Content Types
 
-XiverCMS поддерживает связи между Content Types, аналогично Strapi.
+XiverCMS поддерживает связи между Content Types.
 
 ## Типы связей
 
