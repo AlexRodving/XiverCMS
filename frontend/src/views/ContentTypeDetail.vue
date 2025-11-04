@@ -43,6 +43,38 @@
         <pre class="bg-gray-50 p-4 rounded-md overflow-auto text-sm">{{ JSON.stringify(contentType.schema, null, 2) }}</pre>
       </div>
 
+      <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-semibold mb-4">Public API Endpoints</h2>
+        <div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500 mb-1">Get Entries List</dt>
+            <dd class="flex items-center gap-2">
+              <code class="flex-1 bg-gray-50 px-3 py-2 rounded-md text-sm font-mono">{{ getAPIBaseURL() }}/api/{{ contentType.uid }}</code>
+              <button
+                @click="copyToClipboard(`${getAPIBaseURL()}/api/${contentType.uid}`)"
+                class="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
+                title="Copy URL"
+              >
+                📋
+              </button>
+            </dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500 mb-1">Get Single Entry (example)</dt>
+            <dd class="flex items-center gap-2">
+              <code class="flex-1 bg-gray-50 px-3 py-2 rounded-md text-sm font-mono">{{ getAPIBaseURL() }}/api/{{ contentType.uid }}/:id</code>
+              <button
+                @click="copyToClipboard(`${getAPIBaseURL()}/api/${contentType.uid}/:id`)"
+                class="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
+                title="Copy URL"
+              >
+                📋
+              </button>
+            </dd>
+          </div>
+        </div>
+      </div>
+
       <div class="flex justify-end space-x-4">
         <router-link
           :to="`/content-types/${contentType.uid}/entries`"

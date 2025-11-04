@@ -18,22 +18,36 @@ func SetupRoutes(r *gin.Engine) {
 	// Public routes
 	public := r.Group("/api")
 	{
+		// Auth routes (must be before dynamic content routes)
 		public.POST("/auth/login", handlers.Login)
 		public.POST("/auth/register", handlers.Register)
 
+		// Public roles for registration (must be before dynamic content routes)
+		public.GET("/roles/public", handlers.GetPublicRoles)
+
 		// Public content access - uses OptionalAuthMiddleware to check auth if provided
 		// Access is controlled by accessType in ContentType (public, authenticated, moderator, admin)
+		// Simplified URLs like Strapi: /api/{content-type} and /api/{content-type}/{id}
 		publicContent := public.Group("")
 		publicContent.Use(middleware.OptionalAuthMiddleware())
 		{
+			// Get all content types (list of available types)
+			// Must be registered before /:uid to avoid conflicts
 			publicContent.GET("/content-types", handlers.PublicGetContentTypes)
-			publicContent.GET("/content-types/:uid", handlers.PublicGetContentType)
-			publicContent.GET("/content-types/:uid/entries", handlers.PublicGetContentEntries)
-			publicContent.GET("/content-types/:uid/entries/:id", handlers.PublicGetContentEntry)
-		}
 
-		// Public roles for registration
-		public.GET("/roles/public", handlers.GetPublicRoles)
+			// Get specific content type schema
+			// Must be registered before /:uid to avoid conflicts
+			publicContent.GET("/content-types/:uid", handlers.PublicGetContentType)
+
+			// Public API: Get single entry by ID (must be before /:uid)
+			// URL: /api/{uid}/{id} (e.g., /api/articles/1, /api/books/123)
+			publicContent.GET("/:uid/:id", handlers.PublicGetContentEntry)
+
+			// Public API: Get all entries for a content type (registered last to catch remaining routes)
+			// URL: /api/{uid} (e.g., /api/articles, /api/books)
+			// This will match any /api/{something} that isn't matched above
+			publicContent.GET("/:uid", handlers.PublicGetContentEntries)
+		}
 	}
 
 	// Protected routes - supports both JWT and API tokens
@@ -107,11 +121,17 @@ func SetupRoutes(r *gin.Engine) {
 			contentTypes.DELETE("/:uid", handlers.DeleteContentType)
 		}
 
-		// Content Entries
-		contentEntries := protected.Group("/content-types/:uid/entries")
+		// Content Entries Management (protected - requires auth)
+		// NOTE: Public read access to published entries is via /api/content-types/:uid/entries (public routes above)
+		// These endpoints allow managing entries (create, update, delete)
+		// For reading all entries including drafts, use admin endpoints below
+		contentEntries := protected.Group("/admin/content-types/:uid/entries")
 		{
-			contentEntries.GET("", handlers.GetContentEntries)
-			contentEntries.GET("/:id", handlers.GetContentEntry)
+			// Admin endpoints for reading all entries (including drafts)
+			contentEntries.GET("", handlers.GetContentEntries)   // Can get all statuses with auth
+			contentEntries.GET("/:id", handlers.GetContentEntry) // Can get any entry with auth
+
+			// Management endpoints
 			contentEntries.POST("", handlers.CreateContentEntry)
 			contentEntries.PUT("/:id", handlers.UpdateContentEntry)
 			contentEntries.DELETE("/:id", handlers.DeleteContentEntry)

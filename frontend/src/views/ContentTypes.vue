@@ -67,7 +67,7 @@
                   {{ contentType.accessType || 'public' }}
                 </span>
                 <code class="text-xs text-gray-500 font-mono" :title="$t('contentTypes.publicAPIUrl')">
-                  /api/content-types/{{ contentType.uid }}/entries
+                  /api/{{ contentType.uid }}
                 </code>
               </div>
             </td>

@@ -78,10 +78,20 @@ func PublicGetContentType(c *gin.Context) {
 }
 
 // PublicGetContentEntries - get public content entries
+// Handles /api/{uid} - simplified URL like Strapi
 func PublicGetContentEntries(c *gin.Context) {
 	contentTypeUID := c.Param("uid")
-	var contentType models.ContentType
 
+	// Skip if this is a reserved route (shouldn't happen if routes are ordered correctly)
+	reservedRoutes := []string{"auth", "roles", "users", "permissions", "api-tokens", "upload", "media-files", "content-types", "admin", "audit-logs"}
+	for _, reserved := range reservedRoutes {
+		if contentTypeUID == reserved {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Content type not found"})
+			return
+		}
+	}
+
+	var contentType models.ContentType
 	if err := database.DB.Where("uid = ? AND is_visible = ?", contentTypeUID, true).First(&contentType).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Content type not found"})
 		return
@@ -129,9 +139,19 @@ func PublicGetContentEntries(c *gin.Context) {
 }
 
 // PublicGetContentEntry - get public content entry
+// Handles /api/{uid}/{id} - simplified URL like Strapi
 func PublicGetContentEntry(c *gin.Context) {
 	contentTypeUID := c.Param("uid")
 	entryID := c.Param("id")
+
+	// Skip if this is a reserved route
+	reservedRoutes := []string{"auth", "roles", "users", "permissions", "api-tokens", "upload", "media-files", "content-types", "admin", "audit-logs"}
+	for _, reserved := range reservedRoutes {
+		if contentTypeUID == reserved {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Content type not found"})
+			return
+		}
+	}
 
 	var contentType models.ContentType
 	if err := database.DB.Where("uid = ? AND is_visible = ?", contentTypeUID, true).First(&contentType).Error; err != nil {
