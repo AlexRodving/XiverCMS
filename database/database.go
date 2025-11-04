@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/xivercms/xivercms/auth"
 	"github.com/xivercms/xivercms/config"
 	"github.com/xivercms/xivercms/models"
 	"gorm.io/driver/postgres"
@@ -78,7 +79,12 @@ func Seed() {
 	}
 
 	// Create default admin user
-	hashedPassword, _ := hashPassword("admin123") // In production, use a secure password
+	// Use proper password hashing from auth package
+	hashedPassword, err := auth.HashPassword("admin123") // In production, use a secure password
+	if err != nil {
+		log.Printf("Failed to hash password: %v", err)
+		return
+	}
 	adminUser = models.User{
 		Email:        "admin@xivercms.com",
 		Username:     "admin",
@@ -121,10 +127,4 @@ func Seed() {
 	}
 
 	log.Println("Database seeded successfully")
-}
-
-func hashPassword(password string) (string, error) {
-	// This is a placeholder - you should use bcrypt or similar
-	// For now, we'll implement it in the auth package
-	return password, nil
 }

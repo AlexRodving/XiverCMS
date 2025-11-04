@@ -16,7 +16,7 @@
             :class="$route.path === '/' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-100'"
           >
             <HomeIcon class="w-5 h-5 mr-3" />
-            Dashboard
+            {{ $t('navigation.dashboard') }}
           </router-link>
 
           <router-link
@@ -25,7 +25,7 @@
             :class="$route.path.startsWith('/content-types') ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-100'"
           >
             <DocumentIcon class="w-5 h-5 mr-3" />
-            Content Types
+            {{ $t('navigation.contentTypes') }}
           </router-link>
 
           <router-link
@@ -35,12 +35,17 @@
             :class="$route.path.startsWith('/users') ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-100'"
           >
             <UsersIcon class="w-5 h-5 mr-3" />
-            Users
+            {{ $t('navigation.users') }}
           </router-link>
         </nav>
 
         <!-- User section -->
-        <div class="p-4 border-t border-gray-200">
+        <div class="p-4 border-t border-gray-200 space-y-3">
+          <!-- Language switcher -->
+          <div class="flex justify-center">
+            <LanguageSwitcher />
+          </div>
+          
           <div class="flex items-center justify-between">
             <div class="flex items-center">
               <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
@@ -56,7 +61,7 @@
             <button
               @click="authStore.logout()"
               class="p-2 text-gray-400 hover:text-gray-600"
-              title="Logout"
+              :title="$t('auth.logout')"
             >
               <ArrowRightOnRectangleIcon class="w-5 h-5" />
             </button>
@@ -76,6 +81,7 @@
 
 <script setup>
 import { useAuthStore } from '../stores/auth'
+import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 import {
   HomeIcon,
   DocumentIcon,

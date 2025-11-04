@@ -272,13 +272,12 @@ func CreateContentEntry(c *gin.Context) {
 
 	for k, v := range req.Data {
 		// Check if this is a relation field
-		if schemaMap, ok := contentType.Schema.(map[string]interface{}); ok {
-			if fieldDef, exists := schemaMap[k]; exists {
-				if fieldMap, ok := fieldDef.(map[string]interface{}); ok {
-					if fieldType, _ := fieldMap["type"].(string); fieldType == "relation" {
-						relationData[k] = v
-						continue
-					}
+		schemaMap := map[string]interface{}(contentType.Schema)
+		if fieldDef, exists := schemaMap[k]; exists {
+			if fieldMap, ok := fieldDef.(map[string]interface{}); ok {
+				if fieldType, _ := fieldMap["type"].(string); fieldType == "relation" {
+					relationData[k] = v
+					continue
 				}
 			}
 		}
@@ -349,7 +348,6 @@ func UpdateContentEntry(c *gin.Context) {
 	}
 
 	// Separate relation fields from regular data
-	entryData := make(map[string]interface{})
 	relationData := make(map[string]interface{})
 
 	if req.Data != nil {
@@ -364,20 +362,18 @@ func UpdateContentEntry(c *gin.Context) {
 		// Merge with new data
 		for k, v := range req.Data {
 			// Check if this is a relation field
-			if schemaMap, ok := contentType.Schema.(map[string]interface{}); ok {
-				if fieldDef, exists := schemaMap[k]; exists {
-					if fieldMap, ok := fieldDef.(map[string]interface{}); ok {
-						if fieldType, _ := fieldMap["type"].(string); fieldType == "relation" {
-							relationData[k] = v
-							continue
-						}
+			schemaMap := map[string]interface{}(contentType.Schema)
+			if fieldDef, exists := schemaMap[k]; exists {
+				if fieldMap, ok := fieldDef.(map[string]interface{}); ok {
+					if fieldType, _ := fieldMap["type"].(string); fieldType == "relation" {
+						relationData[k] = v
+						continue
 					}
 				}
 			}
 			currentData[k] = v
 		}
 		entry.Data = models.JSONB(currentData)
-		entryData = currentData
 	}
 
 	if req.Status != "" {
@@ -447,10 +443,7 @@ func processRelations(c *gin.Context, contentTypeUID string, entryID uint, data 
 	}
 
 	// Get schema as map
-	schemaMap, ok := schema.(map[string]interface{})
-	if !ok {
-		return
-	}
+	schemaMap := map[string]interface{}(schema)
 
 	// Process each field in data
 	for fieldName, fieldValue := range data {

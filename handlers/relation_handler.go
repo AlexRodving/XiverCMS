@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/xivercms/xivercms/database"
@@ -50,9 +51,16 @@ func CreateRelation(c *gin.Context) {
 		req.RelationType = "manyToOne"
 	}
 
+	// Convert entryID from string to uint
+	entryIDUint, err := strconv.ParseUint(entryID, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid entry ID"})
+		return
+	}
+
 	relation := models.ContentRelation{
 		SourceContentTypeUID: contentTypeUID,
-		SourceEntryID:        entryID,
+		SourceEntryID:        uint(entryIDUint),
 		SourceFieldName:      req.FieldName,
 		TargetContentTypeUID: req.TargetContentTypeUID,
 		TargetEntryID:        req.TargetEntryID,
