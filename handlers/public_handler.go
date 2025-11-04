@@ -164,7 +164,7 @@ func PublicGetContentEntries(c *gin.Context) {
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
 	offset := (page - 1) * pageSize
 
-	query := database.DB.Where("content_type_id = ? AND status = ?", contentType.ID, "published")
+	query := database.DB.Model(&models.ContentEntry{}).Where("content_type_id = ? AND status = ?", contentType.ID, "published")
 
 	// Search
 	if search := c.Query("search"); search != "" {
