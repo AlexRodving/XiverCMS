@@ -45,7 +45,20 @@
 
       <div class="bg-white rounded-lg shadow p-6">
         <h2 class="text-xl font-semibold mb-4">Public API Endpoints</h2>
-        <div>
+        <div class="space-y-3">
+          <div>
+            <dt class="text-sm font-medium text-gray-500 mb-1">Get Content Type</dt>
+            <dd class="flex items-center gap-2">
+              <code class="flex-1 bg-gray-50 px-3 py-2 rounded-md text-sm font-mono">{{ getAPIBaseURL() }}/api/content-types/{{ contentType.uid }}</code>
+              <button
+                @click="copyToClipboard(`${getAPIBaseURL()}/api/content-types/${contentType.uid}`)"
+                class="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
+                title="Copy URL"
+              >
+                📋
+              </button>
+            </dd>
+          </div>
           <div>
             <dt class="text-sm font-medium text-gray-500 mb-1">Get Entries List</dt>
             <dd class="flex items-center gap-2">
@@ -71,6 +84,13 @@
                 📋
               </button>
             </dd>
+          </div>
+          <div class="mt-4 p-3 bg-blue-50 rounded-md text-sm text-blue-800">
+            <p class="font-medium mb-1">ℹ️ Access Control:</p>
+            <p v-if="contentType.accessType === 'public'" class="text-xs">This endpoint is <strong>public</strong> - no authentication required.</p>
+            <p v-else-if="contentType.accessType === 'authenticated'" class="text-xs">This endpoint requires <strong>authentication</strong> - add <code>Authorization: Bearer TOKEN</code> header.</p>
+            <p v-else-if="contentType.accessType === 'moderator'" class="text-xs">This endpoint requires <strong>Moderator or Admin</strong> role.</p>
+            <p v-else-if="contentType.accessType === 'admin'" class="text-xs">This endpoint requires <strong>Admin</strong> role.</p>
           </div>
         </div>
       </div>

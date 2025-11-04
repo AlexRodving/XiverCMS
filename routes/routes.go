@@ -111,11 +111,17 @@ func SetupRoutes(r *gin.Engine) {
 			mediaFiles.DELETE("/:id", handlers.DeleteMediaFile)
 		}
 
-		// Content Types
+		// Content Types Management (protected - requires auth)
+		// NOTE: Public read access to content types is via /api/content-types (public routes above)
+		// These endpoints allow managing content types (create, update, delete)
 		contentTypes := protected.Group("/content-types")
 		{
-			contentTypes.GET("", handlers.GetContentTypes)
-			contentTypes.GET("/:uid", handlers.GetContentType)
+			// Admin GET endpoints (for viewing all types including non-visible ones)
+			// Public access is via public routes above
+			contentTypes.GET("/admin", handlers.GetContentTypes)     // Different path to avoid conflict
+			contentTypes.GET("/:uid/admin", handlers.GetContentType) // Admin version
+
+			// Management endpoints
 			contentTypes.POST("", handlers.CreateContentType)
 			contentTypes.PUT("/:uid", handlers.UpdateContentType)
 			contentTypes.DELETE("/:uid", handlers.DeleteContentType)

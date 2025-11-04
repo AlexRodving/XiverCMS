@@ -10,15 +10,41 @@ import (
 	"github.com/xivercms/xivercms/models"
 )
 
-// PublicGetContentTypes - get public content types
+// PublicGetContentTypes - get content types (public or admin based on auth)
+// If authenticated as admin, returns all content types including non-visible ones
+// Otherwise, returns only visible and accessible content types
 func PublicGetContentTypes(c *gin.Context) {
 	var allContentTypes []models.ContentType
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
 	offset := (page - 1) * pageSize
 
-	// Get all visible content types
-	baseQuery := database.DB.Model(&models.ContentType{}).Where("is_visible = ?", true)
+	// Check if user is authenticated and is admin
+	userID, exists := c.Get("userID")
+	isAdmin := false
+	if exists && userID != nil {
+		var user models.User
+		if err := database.DB.Preload("Roles").First(&user, userID).Error; err == nil {
+			// Check if user is super admin or has admin role
+			if user.IsSuperAdmin {
+				isAdmin = true
+			} else {
+				for _, role := range user.Roles {
+					if role.Name == "Admin" || role.Type == "custom" {
+						isAdmin = true
+						break
+					}
+				}
+			}
+		}
+	}
+
+	// Build query based on admin status
+	baseQuery := database.DB.Model(&models.ContentType{})
+	if !isAdmin {
+		// Public users only see visible content types
+		baseQuery = baseQuery.Where("is_visible = ?", true)
+	}
 
 	var total int64
 	baseQuery.Count(&total)
@@ -28,21 +54,25 @@ func PublicGetContentTypes(c *gin.Context) {
 		return
 	}
 
-	// Filter by access - only include types user can access
+	// Filter by access - only include types user can access (if not admin)
 	accessibleTypes := []models.ContentType{}
 	for _, ct := range allContentTypes {
-		if middleware.CheckContentTypeAccess(ct.UID, c) {
+		if isAdmin || middleware.CheckContentTypeAccess(ct.UID, c) {
 			accessibleTypes = append(accessibleTypes, ct)
 		}
 	}
 
-	// Recalculate total for accessible types only
+	// Recalculate total for accessible types only (if not admin)
 	var accessibleTotal int64
-	allVisible := []models.ContentType{}
-	database.DB.Model(&models.ContentType{}).Where("is_visible = ?", true).Find(&allVisible)
-	for _, ct := range allVisible {
-		if middleware.CheckContentTypeAccess(ct.UID, c) {
-			accessibleTotal++
+	if isAdmin {
+		accessibleTotal = total
+	} else {
+		allVisible := []models.ContentType{}
+		database.DB.Model(&models.ContentType{}).Where("is_visible = ?", true).Find(&allVisible)
+		for _, ct := range allVisible {
+			if middleware.CheckContentTypeAccess(ct.UID, c) {
+				accessibleTotal++
+			}
 		}
 	}
 
@@ -58,18 +88,45 @@ func PublicGetContentTypes(c *gin.Context) {
 	})
 }
 
-// PublicGetContentType - get public content type by UID
+// PublicGetContentType - get content type by UID (public or admin based on auth)
+// If authenticated as admin, returns any content type including non-visible ones
+// Otherwise, returns only visible and accessible content types
 func PublicGetContentType(c *gin.Context) {
 	uid := c.Param("uid")
 	var contentType models.ContentType
 
-	if err := database.DB.Where("uid = ? AND is_visible = ?", uid, true).First(&contentType).Error; err != nil {
+	// Check if user is authenticated and is admin
+	userID, exists := c.Get("userID")
+	isAdmin := false
+	if exists && userID != nil {
+		var user models.User
+		if err := database.DB.Preload("Roles").First(&user, userID).Error; err == nil {
+			if user.IsSuperAdmin {
+				isAdmin = true
+			} else {
+				for _, role := range user.Roles {
+					if role.Name == "Admin" || role.Type == "custom" {
+						isAdmin = true
+						break
+					}
+				}
+			}
+		}
+	}
+
+	// Build query based on admin status
+	query := database.DB.Where("uid = ?", uid)
+	if !isAdmin {
+		query = query.Where("is_visible = ?", true)
+	}
+
+	if err := query.First(&contentType).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Content type not found"})
 		return
 	}
 
-	// Check access based on accessType
-	if !middleware.CheckContentTypeAccess(uid, c) {
+	// Check access based on accessType (if not admin)
+	if !isAdmin && !middleware.CheckContentTypeAccess(uid, c) {
 		c.JSON(http.StatusForbidden, gin.H{"error": "Access denied"})
 		return
 	}
