@@ -17,20 +17,20 @@ export const contentAPI = {
   deleteContentType: (uid) => 
     apiClient.delete(`/content-types/${uid}`),
   
-  // Content Entries
+  // Content Entries (admin endpoints - require authentication)
   getEntries: (uid, params = {}) => 
-    apiClient.get(`/content-types/${uid}/entries`, { params }),
+    apiClient.get(`/admin/content-types/${uid}/entries`, { params }),
   
   getEntry: (uid, id, params = {}) => 
-    apiClient.get(`/content-types/${uid}/entries/${id}`, { params }),
+    apiClient.get(`/admin/content-types/${uid}/entries/${id}`, { params }),
   
   createEntry: (uid, data) => 
-    apiClient.post(`/content-types/${uid}/entries`, data),
+    apiClient.post(`/admin/content-types/${uid}/entries`, data),
   
   updateEntry: (uid, id, data) => 
-    apiClient.put(`/content-types/${uid}/entries/${id}`, data),
+    apiClient.put(`/admin/content-types/${uid}/entries/${id}`, data),
   
   deleteEntry: (uid, id) => 
-    apiClient.delete(`/content-types/${uid}/entries/${id}`),
+    apiClient.delete(`/admin/content-types/${uid}/entries/${id}`),
 }
 
