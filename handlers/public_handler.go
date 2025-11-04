@@ -10,6 +10,21 @@ import (
 	"github.com/xivercms/xivercms/models"
 )
 
+// safeUserResponse returns a safe representation of user data for public APIs
+func safeUserResponse(user *models.User) map[string]interface{} {
+	if user == nil {
+		return nil
+	}
+	return map[string]interface{}{
+		"id":        user.ID,
+		"email":     user.Email,
+		"username":  user.Username,
+		"firstName": user.FirstName,
+		"lastName":  user.LastName,
+		// Intentionally exclude: isSuperAdmin, isActive, password hash, roles
+	}
+}
+
 // PublicGetContentTypes - get content types (public or admin based on auth)
 // If authenticated as admin, returns all content types including non-visible ones
 // Otherwise, returns only visible and accessible content types
@@ -184,8 +199,30 @@ func PublicGetContentEntries(c *gin.Context) {
 		return
 	}
 
+	// Format entries with safe user data
+	formattedEntries := make([]map[string]interface{}, len(entries))
+	for i, entry := range entries {
+		entryMap := map[string]interface{}{
+			"id":            entry.ID,
+			"createdAt":     entry.CreatedAt,
+			"updatedAt":     entry.UpdatedAt,
+			"publishedAt":   entry.PublishedAt,
+			"contentTypeId": entry.ContentTypeID,
+			"data":          entry.Data,
+			"status":        entry.Status,
+		}
+		// Add safe user data
+		if entry.CreatedBy != nil {
+			entryMap["createdBy"] = safeUserResponse(entry.CreatedBy)
+		}
+		if entry.UpdatedBy != nil {
+			entryMap["updatedBy"] = safeUserResponse(entry.UpdatedBy)
+		}
+		formattedEntries[i] = entryMap
+	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"data": entries,
+		"data": formattedEntries,
 		"meta": gin.H{
 			"pagination": gin.H{
 				"page":     page,
@@ -226,6 +263,7 @@ func PublicGetContentEntry(c *gin.Context) {
 	var entry models.ContentEntry
 	if err := database.DB.Where("id = ? AND content_type_id = ? AND status = ?", entryID, contentType.ID, "published").
 		Preload("CreatedBy").
+		Preload("UpdatedBy").
 		First(&entry).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Entry not found"})
 		return
@@ -247,21 +285,54 @@ func PublicGetContentEntry(c *gin.Context) {
 			var relatedEntry models.ContentEntry
 			var relatedContentType models.ContentType
 			database.DB.Where("uid = ?", relation.TargetContentTypeUID).First(&relatedContentType)
-			if err := database.DB.Where("content_type_id = ? AND id = ? AND status = ?", relatedContentType.ID, relation.TargetEntryID, "published").First(&relatedEntry).Error; err == nil {
+			if err := database.DB.Where("content_type_id = ? AND id = ? AND status = ?", relatedContentType.ID, relation.TargetEntryID, "published").
+				Preload("CreatedBy").
+				First(&relatedEntry).Error; err == nil {
 				fieldName := relation.SourceFieldName
+				// Format related entry with safe user data
+				relatedEntryMap := map[string]interface{}{
+					"id":            relatedEntry.ID,
+					"createdAt":     relatedEntry.CreatedAt,
+					"updatedAt":     relatedEntry.UpdatedAt,
+					"publishedAt":   relatedEntry.PublishedAt,
+					"contentTypeId": relatedEntry.ContentTypeID,
+					"data":          relatedEntry.Data,
+					"status":        relatedEntry.Status,
+				}
+				if relatedEntry.CreatedBy != nil {
+					relatedEntryMap["createdBy"] = safeUserResponse(relatedEntry.CreatedBy)
+				}
+
 				if relation.RelationType == "oneToMany" || relation.RelationType == "manyToMany" {
 					if populatedData[fieldName] == nil {
 						populatedData[fieldName] = []interface{}{}
 					}
 					arr := populatedData[fieldName].([]interface{})
-					populatedData[fieldName] = append(arr, relatedEntry)
+					populatedData[fieldName] = append(arr, relatedEntryMap)
 				} else {
-					populatedData[fieldName] = relatedEntry
+					populatedData[fieldName] = relatedEntryMap
 				}
 			}
 		}
 		entry.Data = populatedData
 	}
 
-	c.JSON(http.StatusOK, entry)
+	// Format entry with safe user data
+	entryMap := map[string]interface{}{
+		"id":            entry.ID,
+		"createdAt":     entry.CreatedAt,
+		"updatedAt":     entry.UpdatedAt,
+		"publishedAt":   entry.PublishedAt,
+		"contentTypeId": entry.ContentTypeID,
+		"data":          entry.Data,
+		"status":        entry.Status,
+	}
+	if entry.CreatedBy != nil {
+		entryMap["createdBy"] = safeUserResponse(entry.CreatedBy)
+	}
+	if entry.UpdatedBy != nil {
+		entryMap["updatedBy"] = safeUserResponse(entry.UpdatedBy)
+	}
+
+	c.JSON(http.StatusOK, entryMap)
 }
